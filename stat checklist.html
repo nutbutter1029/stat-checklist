@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Time Checklist</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #f7f8f9, #e3e8ec);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      margin-top: 40px;
+      color: #2c3e50;
+      font-size: 2rem;
+    }
+    h2 {
+      color: #34495e;
+      margin-bottom: 10px;
+    }
+    .checklist {
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 12px;
+      max-width: 600px;
+      width: 90%;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+      margin: 20px 0;
+      transition: transform 0.2s ease;
+    }
+    .checklist:hover {
+      transform: scale(1.01);
+    }
+    label {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+      color: #2f3640;
+    }
+    input[type="checkbox"] {
+      margin-right: 10px;
+      transform: scale(1.2);
+    }
+    .summary-block {
+      font-weight: 600;
+      margin-top: 8px;
+      color: #2980b9;
+    }
+    .progress-bar {
+      height: 10px;
+      background-color: #ecf0f1;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-top: 4px;
+      margin-bottom: 10px;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(to right, #4facfe, #00f2fe);
+      transition: width 0.3s ease-in-out;
+    }
+    .button-container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .action-button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .action-button:hover {
+      background-color: #2980b9;
+    }
+    @media (max-width: 600px) {
+      .checklist {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>📋 Time Checklist</h1>
+  <div class="button-container">
+    <button class="action-button" onclick="saveProgress()">💾 Save Progress</button>
+    <button class="action-button" onclick="resetProgress()">♻️ Reset All</button>
+  </div>
+  <div class="checklist" id="summary">
+    <h2>📊 Total Summary</h2>
+    <div class="summary-block" id="totalTime"></div>
+    <div class="summary-block" id="totalRemaining"></div>
+    <div class="summary-block" id="totalPercent"></div>
+    <div class="progress-bar"><div class="progress-fill" id="barTotal"></div></div>
+  </div>
+  <div class="checklist" id="module4">
+    <h2>📦 Module 4</h2>
+    <label><input type="checkbox" data-id="1"> 26:12</label>
+    <label><input type="checkbox" data-id="2"> 23:45</label>
+    <label><input type="checkbox" data-id="3"> 15:33</label>
+    <div class="summary-block" id="time4"></div>
+    <div class="summary-block" id="remaining4"></div>
+    <div class="summary-block" id="percent4"></div>
+    <div class="progress-bar"><div class="progress-fill" id="bar4"></div></div>
+  </div>
+  <div class="checklist" id="module5">
+    <h2>📦 Module 5</h2>
+    <label><input type="checkbox" data-id="4"> 23:22</label>
+    <label><input type="checkbox" data-id="5"> 29:28</label>
+    <label><input type="checkbox" data-id="6"> 21:54</label>
+    <label><input type="checkbox" data-id="7"> 24:26</label>
+    <label><input type="checkbox" data-id="8"> 26:34</label>
+    <label><input type="checkbox" data-id="9"> 22:26</label>
+    <label><input type="checkbox" data-id="10"> 17:29</label>
+    <label><input type="checkbox" data-id="11"> 22:19</label>
+    <label><input type="checkbox" data-id="12"> 23:47</label>
+    <label><input type="checkbox" data-id="13"> 15:14</label>
+    <div class="summary-block" id="time5"></div>
+    <div class="summary-block" id="remaining5"></div>
+    <div class="summary-block" id="percent5"></div>
+    <div class="progress-bar"><div class="progress-fill" id="bar5"></div></div>
+  </div>
+  <div class="checklist" id="module6">
+    <h2>📦 Module 6</h2>
+    <label><input type="checkbox" data-id="14"> 16:52</label>
+    <label><input type="checkbox" data-id="15"> 22:05</label>
+    <label><input type="checkbox" data-id="16"> 37:58</label>
+    <label><input type="checkbox" data-id="17"> 28:56</label>
+    <label><input type="checkbox" data-id="18"> 27:39</label>
+    <label><input type="checkbox" data-id="19"> 31:11</label>
+    <label><input type="checkbox" data-id="20"> 25:36</label>
+    <label><input type="checkbox" data-id="21"> 21:52</label>
+    <div class="summary-block" id="time6"></div>
+    <div class="summary-block" id="remaining6"></div>
+    <div class="summary-block" id="percent6"></div>
+    <div class="progress-bar"><div class="progress-fill" id="bar6"></div></div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+      const timeValues = {
+        1:[26,12],2:[23,45],3:[15,33],4:[23,22],5:[29,28],6:[21,54],7:[24,26],8:[26,34],9:[22,26],10:[17,29],
+        11:[22,19],12:[23,47],13:[15,14],14:[16,52],15:[22,5],16:[37,58],17:[28,56],18:[27,39],19:[31,11],20:[25,36],21:[21,52]
+      };
+      const modules = { module4:[1,2,3], module5:[4,5,6,7,8,9,10,11,12,13], module6:[14,15,16,17,18,19,20,21] };
+      function formatTimeHMS(t){const h=Math.floor(t/3600),m=Math.floor((t%3600)/60),s=t%60;return`${h}h ${m}m ${s}s`}
+      function updateModule(tid,rid,pid,bid,list){let tot=0,rem=0;list.forEach(id=>{const [m,s]=timeValues[id],sec=m*60+s;tot+=sec;const cb=document.querySelector(`input[data-id='${id}']`);if(!cb.checked)rem+=sec;});const pc=((tot-rem)/tot)*100;document.getElementById(tid).textContent=`Total Time: ${formatTimeHMS(tot)}`;document.getElementById(rid).textContent=`Time Remaining: ${formatTimeHMS(rem)}`;document.getElementById(pid).textContent=`Completed: ${pc.toFixed(2)}%`;document.getElementById(bid).style.width=`${pc.toFixed(2)}%`;return{total:tot,remaining:rem};}
+      function updateAll(){const m4=updateModule('time4','remaining4','percent4','bar4',modules.module4),m5=updateModule('time5','remaining5','percent5','bar5',modules.module5),m6=updateModule('time6','remaining6','percent6','bar6',modules.module6);const gTot=m4.total+m5.total+m6.total,gRem=m4.remaining+m5.remaining+m6.remaining,gPc=((gTot-gRem)/gTot)*100;document.getElementById('totalTime').textContent=`Total Time: ${formatTimeHMS(gTot)}`;document.getElementById('totalRemaining').textContent=`Time Remaining: ${formatTimeHMS(gRem)}`;document.getElementById('totalPercent').textContent=`Overall Completion: ${gPc.toFixed(2)}%`;document.getElementById('barTotal').style.width=`${gPc.toFixed(2)}%`;}
+      checkboxes.forEach(cb=>{const id=cb.getAttribute('data-id'),saved=localStorage.getItem('checkbox-'+id);cb.checked=saved==='true';cb.addEventListener('change',()=>{localStorage.setItem('checkbox-'+id,cb.checked);updateAll();});});updateAll();
+      window.saveProgress=()=>alert("✅ Progress has been saved to your browser!");
+      window.resetProgress=()=>{if(confirm("Are you sure you want to reset all progress?")){checkboxes.forEach(cb=>{cb.checked=false;const id=cb.getAttribute('data-id');localStorage.removeItem('checkbox-'+id);});updateAll();}};
+    });
+  </script>
+</body>
+</html>
